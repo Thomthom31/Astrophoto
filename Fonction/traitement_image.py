@@ -595,6 +595,70 @@ def process_image_hist2(frame):
 
     return img_hist
 
+def create_isometric_image(img, output_size=(300, 400)):
+
+
+    # Handle potential image resizing
+    if img.shape != (100, 100):
+        img = cv2.resize(img, (100, 100))
+
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Create empty output image
+    output = np.zeros(output_size, dtype=np.uint8)
+
+    # Isometric projection parameters
+    angle = np.pi / 4
+    scale_v = 0.9
+    scale_h = 1.4
+
+    # Iterate through image pixels
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            # 3D coordinates
+            x = j
+            y = i
+            z = img[i, j]
+
+            # Isometric projection calculations (element-wise)
+            x_proj = int((np.round((x - y) * np.cos(angle) * scale_h + output_size[0] / 1.5)))
+            y_proj = int((np.round((x + y) * np.sin(angle) * scale_v / 2 - z * scale_v + output_size[1]/2 +30)))
+
+            # Ensure coordinates are within output image bounds
+            x_proj = max(0, min(x_proj, 399))
+            y_proj = max(0, min(y_proj, 299))
+
+            # Draw pixel on output image
+            output[y_proj, x_proj] = 255
+
+    cv2.line(output, (100, 0), (100, 400 ), (32, 32, 32), 1)
+    cv2.line(output, (300, 0), (300, 400 ), (32, 32, 32), 1)
+
+    cv2.line(output, (50, 280), (50, 280-255 ), (64, 64, 64), 1)
+    cv2.line(output, (350, 280), (350, 280-255 ), (64, 64, 64), 1)
+    cv2.line(output, (0, 280), (100, 280 ), (64, 64, 64), 1)
+    cv2.line(output, (300, 280), (400, 280 ), (64, 64, 64), 1)
+
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    cv2.putText(output, f"Profil X", (30, 20), font, 0.4, (128,0,0), 1)
+    cv2.putText(output, f"Profil Y", (330, 20), font, 0.4, (128,0,0), 1)
+    cv2.putText(output, f"3D", (190, 20), font, 0.4, (128,0,0), 1)
+
+    for i in range(99):
+        z1=int(img[50,i])
+        z1b=int(img[50,i+1])        
+        z2=int(img[i,50])
+        z2b=int(img[i+1,50])
+
+        cv2.line(output, (i,280-z1),(i+1,280-z1b),(255,255,255))
+        cv2.line(output, (i+300,280-z2),(i+301,280-z2b),(255,255,255))
+    
+        
+        
+
+    return output
+
+
 ###################################################################################################
 # Fonctions d'empilage
 ###################################################################################################

@@ -219,7 +219,7 @@ def update_image(label_original,label_traite,label_graph):
 
     ###### Traitement des images traitées (partie haute de la fenêtre)
     if config.mode==1:  #Correspond au mode standard avec FTM et mesure de pixels allumés après binarisation
-        original_image_cv, img_spectrum=Fenetres.maj_image_mode_stardard(0)
+        original_image_cv, img_spectrum, img_grey=Fenetres.maj_image_mode_stardard(0)
     else:  #Correspond au mode masque de Bahtinov
         original_image_cv=Fenetres.maj_image_mode_bahtinov(0)
 
@@ -229,13 +229,15 @@ def update_image(label_original,label_traite,label_graph):
     label_original.image = original_image_tk
 
     ###### Traitement des images du graphique (partie base de la fenêtre)
-    img_graph_bas = Fenetres.maj_image_graphique_bas(img_spectrum)
+    if config.mode==1:
+        img_graph_bas = Fenetres.maj_image_graphique_bas(img_spectrum, img_grey)
+    else:
+        img_graph_bas = np.zeros((300, 400, 3), dtype=np.uint8)  # Créer une image noire 
     # Conversion en format PIL pour afficher avec Tkinter la partie basse (les graphs)
     traite_image = Image.fromarray(img_graph_bas)
     traite_image_tk = ImageTk.PhotoImage(traite_image)
     label_graph.configure(image=traite_image_tk)
     label_graph.image = traite_image_tk   
-
 
 #####################################################################
 ## Execution du main

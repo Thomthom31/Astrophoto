@@ -70,14 +70,13 @@ def mesure(val):
         config.FWHM_mode=1
     elif val == "mesure_FWHM":
         config.FWHM_mode=2
-        #config.tab_FWHM = np.zeros(400)
     elif val == "mesure_pix_bin":
         config.FWHM_mode=3
-        #config.tab_pix_bin = np.zeros(400)
     elif val == "mesure_all":
         config.FWHM_mode=4
-        #config.tab_pix_bin = np.zeros(400)
-    
+    elif val == "3D":
+        config.FWHM_mode=5
+
 # Fonction pour gérer les clics sur les boutons du menu
 def button_click(direction):
     #global offset_x, offset_y
@@ -110,6 +109,7 @@ def creation_menu_principal():
     init_menu.add_command(label="Graph FWHM", command=lambda: mesure("mesure_FWHM"))
     init_menu.add_command(label="Graph NB Pix", command=lambda: mesure("mesure_pix_bin"))  
     init_menu.add_command(label="Graph FWHM & NB Pix", command=lambda: mesure("mesure_all")) 
+    init_menu.add_command(label="Profil 3D", command=lambda: mesure("3D"))
     menu_bar.add_cascade(label="Graphique", menu=init_menu)
 
     # Menu "Réglage"

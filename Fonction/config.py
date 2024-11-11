@@ -46,6 +46,6 @@ G_val_pix_bin=0
 index_tab=0
 tab_FWHM = None
 tab_pix_bin = None
-FWHM_mode=4
+FWHM_mode=5
 
 nb_image=0

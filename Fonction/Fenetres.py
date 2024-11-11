@@ -163,12 +163,12 @@ def maj_image_mode_stardard(val):
         frame_traitement_2b = np.zeros((100, 100, 3), dtype=np.uint8)  # Créer une image noire de 100x100 pixels
         frame_traitement_3b = np.zeros((100, 100, 3), dtype=np.uint8)  # Créer une image noire de 100x100 pixels 
         frame_traitement_4b = np.zeros((100, 100, 3), dtype=np.uint8)  # Créer une image noire de 100x100 pixels
-
+        ing_grey = np.zeros((100, 100, 3), dtype=np.uint8)  # Créer une image noire de 100x100 pixels
         img_spectrum = np.zeros((300, 400, 3), dtype=np.uint8)
 
         # traitement d'image
         frame_traitement_1, frame_traitement_2 = traitement_image.Extract_ROI(config.frame, config.val_seuil_BIN, config.offset_x_ROI, config.offset_y_ROI,200)
-
+        ing_grey=frame_traitement_2
         # condition d'empilage de l'image
         if config.empilage>1:
             frame_traitement_2=traitement_image.empilage_image(frame_traitement_2,config.empilage)
@@ -231,7 +231,7 @@ def maj_image_mode_stardard(val):
         cv2.line(original_image_cv, (200, 0), (200, 200), (255, 255, 255), 1)
         cv2.line(original_image_cv, (300, 0), (300, 200), (255, 255, 255), 1)
 
-        return original_image_cv, img_spectrum
+        return original_image_cv, img_spectrum, ing_grey
 
 ###################################################################################################
 ## Fenêtre mode Bahtinov
@@ -266,14 +266,14 @@ def maj_image_mode_bahtinov(val):
 
         return original_image_cv
 
-def maj_image_graphique_bas(img_spectrum):
+def maj_image_graphique_bas(img_spectrum, image_grey):
         font = cv2.FONT_HERSHEY_SIMPLEX
         subimage2 = np.zeros((300, 400, 3), dtype=np.uint8)  # Créer une image noire 
 
         if config.FWHM_mode==1 and config.mode==1:
             subimage2 = img_spectrum
 
-        elif (config.FWHM_mode==2 or config.FWHM_mode==3 or config.FWHM_mode==4) and config.mode==1:
+        elif (config.FWHM_mode>1) and config.mode==1:
 
             config.tab_FWHM[config.index_tab]=config.G_val_FTM
             config.tab_pix_bin[config.index_tab]=config.G_val_pix_bin
@@ -329,6 +329,11 @@ def maj_image_graphique_bas(img_spectrum):
                 cv2.putText(subimage2, f"{config.G_val_pix_bin}", (config.index_tab+15, 250-int(local_tab[config.index_tab]*6*zoom_factor)+3), font, 0.3, coul, 1)
 
             cv2.line(subimage2, (1, 251), (400, 251 ), (64, 64, 64), 1)
+
+            if config.FWHM_mode==5:
+                subimage2=traitement_image.create_isometric_image(image_grey)
+            
+            
             
 
             config.index_tab =config.index_tab+1
